@@ -10,7 +10,7 @@ const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
-async function register(reg, res) {
+async function register(req, res) {
   try {
     const { name, email, password } = req.body;
     if (!name || !email || !password || password.length < 8) {
@@ -36,4 +36,27 @@ async function register(reg, res) {
   }
 }
 
-module.exports = { register };
+async function login(req, res) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({ error: "Email & password required" });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) return res.status(401).json({ error: "Invalid credentials" });
+
+    const token = jwt.sign({ uid: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    const cookieName = process.env.COOKIE_NAME || "jid";
+    res.cookie(cookieName, token, cookieOptions);
+    res.json({ user: { id: user.id, name: user.name, email: user.email } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+module.exports = { register, login };
