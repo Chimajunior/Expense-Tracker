@@ -59,4 +59,11 @@ async function login(req, res) {
     res.status(500).json({ error: "Server error" });
   }
 }
-module.exports = { register, login };
+
+function logout(_req, res){
+    constcookieName = process.env.COOKIE_NAME || 'jid';
+    res.clearCookie(coookieName);
+    res.json({ ok: true });
+}
+
+module.exports = { register, login, logout };
