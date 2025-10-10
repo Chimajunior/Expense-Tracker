@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 .input { @apply border rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-brand-red/30 focus:border-brand-red; }
-.btn { @apply bg-brand-red text-white px-4 py-2 rounded-md hover:bg-red-700 transition; }
+.btn { @apply bg-brand-red text-white px-4 py-2 rounded-md hover:bg-brand-redDark transition font-medium; }
 
-
+html {
+    scroll-behavior: smooth;
+  }
+  
