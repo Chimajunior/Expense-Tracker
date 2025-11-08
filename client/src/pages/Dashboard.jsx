@@ -3,13 +3,16 @@ import { api } from "../lib/axios";
 import SummaryCards from "../components/SummaryCards";
 import TransactionForm from "../components/TransactionForm";
 import TransactionList from "../components/TransactionList";
+import Insights from "../components/Insights";
+
 
 export default function Dashboard() {
   const [items, setItems] = useState([]);
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0,7)); // YYYY-MM
 
   async function load() {
-    const res = await api.get("/transactions", { params: { month } });
+    const res = await api.get("/transactions",
+      { params: { month, t: Date.now() } });
     setItems(res.data.items);
   }
 
@@ -27,6 +30,8 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         <TransactionForm onAdded={load} />
         <TransactionList items={items} />
+        <Insights items={items} />
+
       </div>
     </div>
   );
